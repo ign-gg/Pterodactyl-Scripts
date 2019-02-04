@@ -10,7 +10,7 @@ if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root"
    exit 1
 elif [[ $EUID -eq 0 ]]; then
-   echo -e "Session Running as \e[36mROOT...\e[0m"
+   echo -e "Session Running as \e[36mROOT\e[0m"
 fi
 
 echo ""
@@ -40,8 +40,10 @@ echo "#   Installing Pterodactyl Node Packages   #"
 echo "#                                          #"
 echo "############################################"
 
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 apt-get -y install zip unzip tar make gcc g++ python \
-                   python-dev docker.io nodejs npm
+                   python-dev docker.io nodejs
+npm upgrade 
 
 # Enable Docker Service
 systemctl enable docker
@@ -57,7 +59,15 @@ echo "############################################"
 
 mkdir -p /srv/daemon /srv/daemon-data
 cd /srv/daemon
-wget https://github.com/pterodactyl/daemon/archive/master.zip
-unzip master.zip && rm master.zip && mv /srv/daemon/daemon-master/* /srv/daemon/ && rm $
+curl -L https://github.com/pterodactyl/daemon/releases/download/v0.6.11/daemon.tar.gz | tar --strip-components=1 -xzv
+npm install --only=production
+npm audit fix
 
+# PULL DOWN CONFIG FROM PANEL
+npm start
+
+# Configure Wings Service
+wget https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/wings.service -O /etc/systemd/system/wings.service
+systemctl enable wings
+systemctl start wings
 
