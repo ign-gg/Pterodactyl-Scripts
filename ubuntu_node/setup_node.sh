@@ -42,12 +42,28 @@ echo "############################################"
 
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 apt-get -y install zip unzip tar make gcc g++ python \
-                   python-dev docker.io nodejs
+                   python-dev docker.io nodejs certbot
 npm upgrade 
 
 # Enable Docker Service
 systemctl enable docker
 systemctl start docker
+
+# Generate LetsCrypt
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#     Generate Certbot SSL Certificate     #"
+echo "#                                          #"
+echo "############################################"
+
+
+echo ""
+echo "Please enter the FQDN for the Pyterdactyl Node"
+read nodefqdn
+#certbot certonly -d  pterodactyl-node01.azuriscraft.co.uk --manual --preferred-challenges dns
+certbot certonly -d "$nodefqdn" --manual --preferred-challenges dns
+
 
 # Install Daemon Software
 echo ""
@@ -63,7 +79,10 @@ curl -L https://github.com/pterodactyl/daemon/releases/download/v0.6.11/daemon.t
 npm install --only=production
 npm audit fix
 
+
+#
 # PULL DOWN CONFIG FROM PANEL
+#
 npm start
 
 # Configure Wings Service
