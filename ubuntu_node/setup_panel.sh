@@ -1,0 +1,112 @@
+#!/bin/bash
+#
+#
+
+# Clear Current Screen
+clear
+
+# Check Session Status
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root"
+   exit 1
+elif [[ $EUID -eq 0 ]]; then
+   echo -e "Session Running as \e[36mROOT\e[0m"
+fi
+
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#  AnarchyPE Automated Panel Setup Script  #"
+echo "#  Version 0.1-Alpha                       #"
+echo "#                                          #"
+echo "############################################"
+
+# Update System and Local Packages
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#  Updating Local Repository and Packages  #"
+echo "#                                          #"
+echo "############################################"
+
+apt-get update && apt-get -y upgrade
+
+# Install Pterodactyl Panel Packages
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#  Installing Pterodactyl Panel Packages   #"
+echo "#                                          #"
+echo "############################################"
+
+apt-get -y install software-properties-common curl
+
+LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+add-apt-repository -y ppa:chris-lea/redis-server
+curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+
+apt-get update
+apt-add-repository universe
+
+apt-get -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstring \
+                   php7.2-tokenizer php7.2-bcmath php7.2-xml php7.2-fpm php7.2-curl \
+                   php7.2-zip mariadb-server nginx tar unzip git redis-server certbot
+
+# NOTE: THIS DOES NOT WORK! VVVVV
+#echo "& n y y y y y" |  ./usr/bin/mysql_secure_installation
+
+# Configure Panel Database
+#mysql -u root -p 
+#USE mysql;
+#CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY 'somePassword';
+#CREATE DATABASE panel;
+#GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;
+#FLUSH PRIVILEGES;
+#exit
+
+# Install Pterodactyl Panel 
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#         Install Pterodactyl Panel        #"
+echo "#                                          #"
+echo "############################################"
+
+curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+mkdir -p /var/www/pterodactyl
+cd /var/www/pterodactyl
+curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v0.7.12/panel.tar.gz
+tar --strip-components=1 -xzvf panel.tar.gz
+chmod -R 755 storage/* bootstrap/cache/
+
+# Configure Pterodactyl Panel 
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#       Configure Pterodactyl Panel        #"
+echo "#                                          #"
+echo "############################################"
+
+cp .env.example .env
+composer install --no-dev --optimize-autoloader
+
+# Only run the command below if you are installing this Panel for
+# the first time and do not have any Pterodactyl Panel data in the database.
+php artisan key:generate --force
+
+php artisan p:environment:setup
+php artisan p:environment:database
+
+# To use PHP's internal mail sending (not recommended), select "mail". To use a
+# custom SMTP server, select "smtp".
+php artisan p:environment:mail
+
+php artisan migrate --seed
+php artisan p:user:make
+
+chown -R www-data:www-data * 
+service nginx restart
+
+wget https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/pteroq.service -O /etc/systemd/system/pteroq.service
+systemctl enable pteroq.service
+systemctl start  pteroq.service
