@@ -76,7 +76,7 @@ mkdir -p /srv/daemon /srv/daemon-data
 cd /srv/daemon
 curl -L https://github.com/pterodactyl/daemon/releases/download/v0.6.11/daemon.tar.gz | tar --strip-components=1 -xzv
 npm install --only=production
-npm audit fix
+#npm audit fix
 
 #
 # PULL DOWN CONFIG FROM PANEL
