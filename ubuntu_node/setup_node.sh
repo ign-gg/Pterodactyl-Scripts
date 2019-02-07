@@ -56,13 +56,10 @@ echo "#     Generate Certbot SSL Certificate     #"
 echo "#                                          #"
 echo "############################################"
 
-
 echo ""
 echo "Please enter the FQDN for the Pyterdactyl Node"
-read nodefqdn
-#certbot certonly -d  pterodactyl-node01.azuriscraft.co.uk --manual --preferred-challenges dns
-certbot certonly -d "$nodefqdn" --manual --preferred-challenges dns
-
+read -p "Enter FQDN: " nodefqdn
+certbot certonly -d "$nodefqdn" --manual --preferred-challenges dns --register-unsafely-without-email
 
 # Install Daemon Software
 echo ""
@@ -72,19 +69,39 @@ echo "#  Installing Pterodactyl Daemon Software  #"
 echo "#                                          #"
 echo "############################################"
 
+# Create Daemon Directory
 mkdir -p /srv/daemon /srv/daemon-data
 cd /srv/daemon
-curl -L https://github.com/pterodactyl/daemon/releases/download/v0.6.11/daemon.tar.gz | tar --strip-components=1 -xzv
-npm install --only=production
-#npm audit fix
 
-#
-# PULL DOWN CONFIG FROM PANEL
-#
-npm start
+# Download Latest Panel
+echo ""
+echo " New Node? You need to get you some Pterodactyl Daemon goodness!!"
+echo " Please Visit: https://github.com/pterodactyl/daemon/releases"
+echo " Copy the link for the daemon.tar.gz and paste below!"
+echo ""
+
+read -p "Paste Here: " NodeRepo
+curl -L $NodeRepo | tar --strip-components=1 -xzv
+npm install --only=production
+
+echo ""
+echo " Configure the Pterodactyl Daemon"
+echo " Please go to the control panel and create"
+echo " a new node and generate the automated token key"
+echo ""
+
+read -p "Paste Here: " NodeToken
+$NodeToken
 
 # Configure Wings Service
 wget https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/wings.service -O /etc/systemd/system/wings.service
 systemctl enable wings
 systemctl start wings
 
+echo ""
+echo "###############################################"
+echo "#                                             #"
+echo "#  Pterodactyl Node Initial Setup Completed!  #"
+echo "#  Please Check Node status under your panel  #"
+echo "#                                             #"
+echo "###############################################"
