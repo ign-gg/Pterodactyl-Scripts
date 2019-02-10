@@ -54,6 +54,8 @@ apt-get -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mb
 
 # NOTE: THIS DOES NOT WORK! VVVVV
 #echo "& n y y y y y" |  ./usr/bin/mysql_secure_installation
+#<or try:>
+#echo -e "\ny\ny\n<password>\n<password>\ny\ny\ny\ny" | ./usr/bin/mysql_secure_installation
 
 # Configure Panel Database
 #mysql -u root -p 
