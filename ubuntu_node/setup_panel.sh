@@ -80,13 +80,15 @@ expect eof
 echo "$SECURE_MYSQL"
 
 # Configure Panel Database
-#mysql -u root -p 
-#USE mysql;
-#CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY 'somePassword';
-#CREATE DATABASE panel;
-#GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;
-#FLUSH PRIVILEGES;
-#exit
+MySQLUserPwd=$(./usr/bin/openssl rand -base64 21)
+
+mysql -u root -p <<MYSQL_SCRIPT
+USE mysql; CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '$MySQLUserPwd';
+CREATE DATABASE panel; GRANT ALL PRIVILEGES
+ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION; FLUSH
+PRIVILEGES;
+exit
+MYSQL_SCRIPT
 
 # Install Pterodactyl Panel 
 echo ""
@@ -134,3 +136,10 @@ service nginx restart
 wget https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/pteroq.service -O /etc/systemd/system/pteroq.service
 systemctl enable pteroq.service
 systemctl start  pteroq.service
+
+
+#
+
+echo "Mysql Databse: panel"
+echo "Usernmae: pterodactyl"
+echo "Password: $MySQLUserPwd"
