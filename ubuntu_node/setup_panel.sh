@@ -34,6 +34,7 @@ echo "#                                          #"
 echo "############################################"
 
 apt-get update && apt-get -y upgrade
+apt-get -y install software-properties-common curl
 
 # Install Pterodactyl Panel Packages
 echo ""
@@ -42,8 +43,6 @@ echo "#                                          #"
 echo "#  Installing Pterodactyl Panel Packages   #"
 echo "#                                          #"
 echo "############################################"
-
-apt-get -y install software-properties-common curl
 
 LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
 add-apt-repository -y ppa:chris-lea/redis-server
@@ -55,7 +54,7 @@ apt-add-repository universe
  apt-get -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstring \
                    php7.2-tokenizer php7.2-bcmath php7.2-xml php7.2-fpm php7.2-curl \
                    php7.2-zip mariadb-server mariadb-client nginx tar unzip git redis-server \
-                   certbot expect composer
+                   certbot expect composer wget
                    
 # Enable and Start Local System Services
 systemctl enable mysql
@@ -115,6 +114,19 @@ curl -Lo panel.tar.gz $PanelRepo
 tar --strip-components=1 -xzvf panel.tar.gz
 chmod -R 755 storage/* bootstrap/cache/
 
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#     Generate Certbot SSL Certificate     #"
+echo "#                                          #"
+echo "############################################"
+
+echo ""
+echo "Please enter the FQDN for the Pyterdactyl Panel"
+read -p "Enter FQDN: " panelfqdn
+certbot certonly -d "$panelfqdn" --manual --preferred-challenges dns --register-unsafely-without-email
+echo ""
+
 # Configure Pterodactyl Panel
 echo ""
 echo "############################################"
@@ -147,8 +159,12 @@ wget https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/pt
 systemctl enable pteroq.service
 systemctl start  pteroq.service
 
+# Final Message 
 
-#
+echo ""
+echo " Panel Setup Completed!! Please go to: https://$panelfqdn "
+echo ""
+
 echo ""
 echo "Mysql Databse: panel"
 echo "Username: pterodactyl"
