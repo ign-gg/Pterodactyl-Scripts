@@ -114,19 +114,6 @@ curl -Lo panel.tar.gz $PanelRepo
 tar --strip-components=1 -xzvf panel.tar.gz
 chmod -R 755 storage/* bootstrap/cache/
 
-echo ""
-echo "############################################"
-echo "#                                          #"
-echo "#     Generate Certbot SSL Certificate     #"
-echo "#                                          #"
-echo "############################################"
-
-echo ""
-echo "Please enter the FQDN for the Pyterdactyl Panel"
-read -p "Enter FQDN: " panelfqdn
-certbot certonly -d "$panelfqdn" --manual --preferred-challenges dns --register-unsafely-without-email
-echo ""
-
 # Configure Pterodactyl Panel
 echo ""
 echo "############################################"
@@ -159,8 +146,41 @@ wget https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/pt
 systemctl enable pteroq.service
 systemctl start  pteroq.service
 
-# Final Message 
+# Configure Nginx SSL
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#       Configure Nginx Web Server         #"
+echo "#                                          #"
+echo "############################################"
 
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#     Generate Certbot SSL Certificate     #"
+echo "#                                          #"
+echo "############################################"
+
+echo ""
+echo "Please enter the FQDN for the Pyterdactyl Panel"
+read -p "Enter FQDN: " panelfqdn
+certbot certonly -d "$panelfqdn" --manual --preferred-challenges dns --register-unsafely-without-email
+echo ""
+
+#
+# WORK IN PROGESS vvv
+#
+
+# Download ssl config
+wget https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/pterodactyl.conf -O /etc/nginx/sites-available/pterodactyl.conf
+
+# Configure default website and restart nginx service
+ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf && service nginx restart
+
+
+^^^^^
+
+# Final Message 
 echo ""
 echo " Panel Setup Completed!! Please go to: https://$panelfqdn "
 echo ""
