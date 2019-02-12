@@ -55,7 +55,7 @@ apt-add-repository universe
  apt-get -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstring \
                    php7.2-tokenizer php7.2-bcmath php7.2-xml php7.2-fpm php7.2-curl \
                    php7.2-zip mariadb-server mariadb-client nginx tar unzip git redis-server \
-                   certbot expect
+                   certbot expect composer
 systemctl enable mysql
 systemctl start mysql
 
@@ -98,10 +98,18 @@ echo "#         Install Pterodactyl Panel        #"
 echo "#                                          #"
 echo "############################################"
 
+echo ""
+echo " New Panel? You need to get you some Pterodactyl Panel goodness!!"
+echo " Please Visit: https://github.com/pterodactyl/panel/releases"
+echo " Copy the link for the panel.tar.gz and paste below!"
+echo ""
+
+read -p "Paste Here: " PanelRepo
+
 curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
 mkdir -p /var/www/pterodactyl
 cd /var/www/pterodactyl
-curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v0.7.12/panel.tar.gz
+curl -Lo panel.tar.gz $PanelRepo
 tar --strip-components=1 -xzvf panel.tar.gz
 chmod -R 755 storage/* bootstrap/cache/
 
@@ -139,7 +147,8 @@ systemctl start  pteroq.service
 
 
 #
-
+echo ""
 echo "Mysql Databse: panel"
-echo "Usernmae: pterodactyl"
+echo "Username: pterodactyl"
 echo "Password: $MySQLUserPwd"
+echo ""
