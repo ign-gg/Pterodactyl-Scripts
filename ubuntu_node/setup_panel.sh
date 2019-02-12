@@ -60,6 +60,9 @@ apt-add-repository universe
 systemctl enable mysql
 systemctl start mysql
 
+systemctl enable nginx
+systemctl start nginx
+
 SECURE_MYSQL=$(expect -c "
 set timeout 10
 spawn mysql_secure_installation
@@ -77,8 +80,7 @@ expect \"Reload privilege tables now?\"
 send \"y\r\"
 expect eof
 ")
-
-echo "$SECURE_MYSQL"
+echo "mysql_secure_installation completed!"
 
 # Configure Panel Database
 MySQLUserPwd=$(./usr/bin/openssl rand -base64 21)
@@ -90,6 +92,15 @@ ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION; FLUSH
 PRIVILEGES;
 exit
 MYSQL_SCRIPT
+
+echo ""
+echo ""
+echo "MySQL Database: Panel Created!"
+echo 
+echo "Username: pterodactyl"
+echo "Password: $MySQLUserPwd"
+
+Sleep two 
 
 # Install Pterodactyl Panel
 echo ""
