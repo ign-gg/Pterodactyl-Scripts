@@ -1,10 +1,5 @@
 #!/bin/bash
 #
-# TO DO
-#  mysql_secure_installation [☑]
-#  configure mysql database for pyterdactyl panel [ ]
-#  automate random password generation and export to text file
-
 
 # Clear Current Screen
 clear
@@ -34,6 +29,7 @@ echo "#                                          #"
 echo "############################################"
 
 apt-get update && apt-get -y upgrade
+apt-get -y install software-properties-common curl
 
 # Install Pterodactyl Panel Packages
 echo ""
@@ -43,21 +39,24 @@ echo "#  Installing Pterodactyl Panel Packages   #"
 echo "#                                          #"
 echo "############################################"
 
-apt-get -y install software-properties-common curl
-
 LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
 add-apt-repository -y ppa:chris-lea/redis-server
-curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
+curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash
 
 apt-get update
 apt-add-repository universe
 
- apt-get -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstring \
-                   php7.2-tokenizer php7.2-bcmath php7.2-xml php7.2-fpm php7.2-curl \
+apt-get -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstring \
+root                   php7.2-tokenizer php7.2-bcmath php7.2-xml php7.2-fpm php7.2-curl \
                    php7.2-zip mariadb-server mariadb-client nginx tar unzip git redis-server \
-                   certbot expect
+                   certbot expect composer wget
+                   
+# Enable and Start Local System Services
 systemctl enable mysql
 systemctl start mysql
+
+systemctl enable nginx
+systemctl start nginx
 
 SECURE_MYSQL=$(expect -c "
 set timeout 10
@@ -76,19 +75,30 @@ expect \"Reload privilege tables now?\"
 send \"y\r\"
 expect eof
 ")
-
-echo "$SECURE_MYSQL"
+echo "mysql_secure_installation completed!"
 
 # Configure Panel Database
-#mysql -u root -p 
-#USE mysql;
-#CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY 'somePassword';
-#CREATE DATABASE panel;
-#GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;
-#FLUSH PRIVILEGES;
-#exit
+MySQLUserPwd=$(openssl rand -base64 21)
 
-# Install Pterodactyl Panel 
+echo ""
+echo "Please Enter Root MySQL Password to execute mysql_secure_installation"
+mysql -u root -p <<MYSQL_SCRIPT
+USE mysql; CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '$MySQLUserPwd';
+CREATE DATABASE panel; GRANT ALL PRIVILEGES
+ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION; FLUSH
+PRIVILEGES;
+exit
+MYSQL_SCRIPT
+
+echo ""
+echo ""
+echo "MySQL Database: Panel Created!"
+echo ""
+echo "Database: panel"
+echo "Username: pterodactyl"
+echo "Password: $MySQLUserPwd"
+
+# Install Pterodactyl Panel
 echo ""
 echo "############################################"
 echo "#                                          #"
@@ -96,14 +106,22 @@ echo "#         Install Pterodactyl Panel        #"
 echo "#                                          #"
 echo "############################################"
 
-curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+echo ""
+echo " New Panel? You need to get you some Pterodactyl Panel goodness!!"
+echo " Please Visit: https://github.com/pterodactyl/panel/releases"
+echo " Copy the link for the panel.tar.gz and paste below!"
+echo ""
+
+read -p "Paste Here: " PanelRepo
+
+curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 mkdir -p /var/www/pterodactyl
 cd /var/www/pterodactyl
-curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v0.7.12/panel.tar.gz
+curl -Lo panel.tar.gz $PanelRepo
 tar --strip-components=1 -xzvf panel.tar.gz
 chmod -R 755 storage/* bootstrap/cache/
 
-# Configure Pterodactyl Panel 
+# Configure Pterodactyl Panel
 echo ""
 echo "############################################"
 echo "#                                          #"
@@ -128,9 +146,55 @@ php artisan p:environment:mail
 php artisan migrate --seed
 php artisan p:user:make
 
-chown -R www-data:www-data * 
+chown -R www-data:www-data *
 service nginx restart
 
 wget https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/pteroq.service -O /etc/systemd/system/pteroq.service
 systemctl enable pteroq.service
 systemctl start  pteroq.service
+
+# Configure Nginx SSL
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#       Configure Nginx Web Server         #"
+echo "#                                          #"
+echo "############################################"
+
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#     Generate Certbot SSL Certificate     #"
+echo "#                                          #"
+echo "############################################"
+
+echo ""
+echo "Please enter the FQDN for the Pyterdactyl Panel"
+read -p "Enter FQDN: " panelfqdn
+certbot certonly -d "$panelfqdn" --manual --preferred-challenges dns --register-unsafely-without-email
+
+echo ""
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#      Configure Pterodactyl Panel SSL     #"
+echo "#                                          #"
+echo "############################################"
+
+# Download ssl config
+wget https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/pterodactyl.conf -O /etc/nginx/sites-available/pterodactyl.conf
+
+# Configure default website and restart nginx service
+sed -i -e "s/<domain>/"$panelfqdn"/g" /etc/nginx/sites-available/pterodactyl.conf
+ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf && service nginx restart
+
+# Final Message 
+echo ""
+echo " Panel Setup Completed!! Please go to: https://$panelfqdn "
+echo ""
+
+echo ""
+echo "Mysql Databse: panel"
+echo "Username: pterodactyl"
+echo "Password: $MySQLUserPwd"
+echo ""
