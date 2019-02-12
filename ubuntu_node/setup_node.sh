@@ -73,7 +73,7 @@ echo "############################################"
 mkdir -p /srv/daemon /srv/daemon-data
 cd /srv/daemon
 
-# Download Latest Panel
+# Download Latest Daemon
 echo ""
 echo " New Node? You need to get you some Pterodactyl Daemon goodness!!"
 echo " Please Visit: https://github.com/pterodactyl/daemon/releases"
