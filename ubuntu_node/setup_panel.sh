@@ -83,8 +83,10 @@ expect eof
 echo "mysql_secure_installation completed!"
 
 # Configure Panel Database
-MySQLUserPwd=$(./usr/bin/openssl rand -base64 21)
+MySQLUserPwd=$(openssl rand -base64 21)
 
+echo ""
+echo "Please Enter Root MySQL Password to execute mysql_secure_installation"
 mysql -u root -p <<MYSQL_SCRIPT
 USE mysql; CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '$MySQLUserPwd';
 CREATE DATABASE panel; GRANT ALL PRIVILEGES
