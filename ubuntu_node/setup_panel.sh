@@ -56,6 +56,8 @@ apt-add-repository universe
                    php7.2-tokenizer php7.2-bcmath php7.2-xml php7.2-fpm php7.2-curl \
                    php7.2-zip mariadb-server mariadb-client nginx tar unzip git redis-server \
                    certbot expect composer
+                   
+# Enable and Start Local System Services
 systemctl enable mysql
 systemctl start mysql
 
@@ -90,7 +92,7 @@ PRIVILEGES;
 exit
 MYSQL_SCRIPT
 
-# Install Pterodactyl Panel 
+# Install Pterodactyl Panel
 echo ""
 echo "############################################"
 echo "#                                          #"
@@ -113,7 +115,7 @@ curl -Lo panel.tar.gz $PanelRepo
 tar --strip-components=1 -xzvf panel.tar.gz
 chmod -R 755 storage/* bootstrap/cache/
 
-# Configure Pterodactyl Panel 
+# Configure Pterodactyl Panel
 echo ""
 echo "############################################"
 echo "#                                          #"
@@ -138,7 +140,7 @@ php artisan p:environment:mail
 php artisan migrate --seed
 php artisan p:user:make
 
-chown -R www-data:www-data * 
+chown -R www-data:www-data *
 service nginx restart
 
 wget https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/pteroq.service -O /etc/systemd/system/pteroq.service
