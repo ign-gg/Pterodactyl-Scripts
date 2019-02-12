@@ -98,7 +98,8 @@ MYSQL_SCRIPT
 echo ""
 echo ""
 echo "MySQL Database: Panel Created!"
-echo 
+echo ""
+echo "Databse:  spanel"
 echo "Username: pterodactyl"
 echo "Password: $MySQLUserPwd"
 
