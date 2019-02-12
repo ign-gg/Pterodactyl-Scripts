@@ -52,10 +52,12 @@ curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 apt-get update
 apt-add-repository universe
 
-apt-get -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstring \
+ apt-get -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstring \
                    php7.2-tokenizer php7.2-bcmath php7.2-xml php7.2-fpm php7.2-curl \
-                   php7.2-zip mariadb-server mariadb-client nginx tar unzip git redis-server \ 
-                  certbot expect
+                   php7.2-zip mariadb-server mariadb-client nginx tar unzip git redis-server \
+                   certbot expect
+systemctl enable mysql
+systemctl start mysql
 
 SECURE_MYSQL=$(expect -c "
 set timeout 10
