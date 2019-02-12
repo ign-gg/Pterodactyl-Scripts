@@ -99,11 +99,9 @@ echo ""
 echo ""
 echo "MySQL Database: Panel Created!"
 echo ""
-echo "Databse:  spanel"
+echo "Database: panel"
 echo "Username: pterodactyl"
 echo "Password: $MySQLUserPwd"
-
-Sleep two 
 
 # Install Pterodactyl Panel
 echo ""
@@ -184,7 +182,7 @@ echo ""
 echo ""
 echo "############################################"
 echo "#                                          #"
-echo "# Update Certbot's Default Conf for Nginx  #"
+echo "#      Configure Pterodactyl Panel SSL     #"
 echo "#                                          #"
 echo "############################################"
 
@@ -192,10 +190,8 @@ echo "############################################"
 wget https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/pterodactyl.conf -O /etc/nginx/sites-available/pterodactyl.conf
 
 # Configure default website and restart nginx service
-sed -i 's/<domain>/$panelfqdn/g' /etc/nginx/sites-available/pterodactyl.conf
+sed -i -e "s/<domain>/"$panelfqdn"/g" /etc/nginx/sites-available/pterodactyl.conf
 ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf && service nginx restart
-
-^^^^^
 
 # Final Message 
 echo ""
