@@ -1,6 +1,10 @@
 #!/bin/bash
 #
-#
+# TO DO
+#  mysql_secure_installation [☑]
+#  configure mysql database for pyterdactyl panel [ ]
+#  automate random password generation and export to text file
+
 
 # Clear Current Screen
 clear
@@ -50,12 +54,28 @@ apt-add-repository universe
 
 apt-get -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstring \
                    php7.2-tokenizer php7.2-bcmath php7.2-xml php7.2-fpm php7.2-curl \
-                   php7.2-zip mariadb-server nginx tar unzip git redis-server certbot
+                   php7.2-zip mariadb-server mariadb-client nginx tar unzip git redis-server \ 
+                  certbot expect
 
-# NOTE: THIS DOES NOT WORK! VVVVV
-#echo "& n y y y y y" |  ./usr/bin/mysql_secure_installation
-#<or try:>  Replace "<password>" with root password to be used.
-#echo -e "\ny\ny\n<password>\n<password>\ny\ny\ny\ny" | ./usr/bin/mysql_secure_installation
+SECURE_MYSQL=$(expect -c "
+set timeout 10
+spawn mysql_secure_installation
+expect \"Enter current password for root (enter for none):\"
+send \"$MYSQL\r\"
+expect \"Change the root password?\"
+send \"n\r\"
+expect \"Remove anonymous users?\"
+send \"y\r\"
+expect \"Disallow root login remotely?\"
+send \"y\r\"
+expect \"Remove test database and access to it?\"
+send \"y\r\"
+expect \"Reload privilege tables now?\"
+send \"y\r\"
+expect eof
+")
+
+echo "$SECURE_MYSQL"
 
 # Configure Panel Database
 #mysql -u root -p 
