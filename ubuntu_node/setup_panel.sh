@@ -35,13 +35,16 @@ apt -y install software-properties-common curl
 echo ""
 echo "############################################"
 echo "#                                          #"
-echo "#  Installing Pterodactyl Panel Packages   #"
+echo "#   Installing Pterodactyl Dependancies    #"
 echo "#                                          #"
 echo "############################################"
 
+mariadb_repo_setup=/etc/apt/sources.list.d/mariadb.list
+if [ -f mariadb_repo_setup ]; then
 LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
 add-apt-repository -y ppa:chris-lea/redis-server
 curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash
+fi
 
 apt update
 apt-add-repository universe
@@ -50,23 +53,28 @@ apt -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstri
                    php7.2-tokenizer php7.2-bcmath php7.2-xml php7.2-fpm php7.2-curl \
                    php7.2-zip mariadb-server mariadb-client nginx tar unzip git redis-server \
                    certbot expect composer wget dialog redis
-                   
-DockerContainer=/.dockerenv     
+
+DockerContainer=/.dockerenv
 if [ -f $DockerContainer ]; then
-   # Enable and Start Local System Services   
-   service mysql start  
-   service nginx start 
+   echo ""
+   # Enable and Start Local System Services
+   service mysql start
+   service nginx start
+   service redis-server start
+
 else
+   echo ""
    # Enable and Start Local System Services
    systemctl enable mysql
    systemctl start mysql
 
    systemctl enable nginx
    systemctl start nginx
-fi 
 
+fi
+
+# Execute mysql_secure_installation
 SECURE_MYSQL=$(expect -c "
-set timeout 10
 spawn mysql_secure_installation
 expect \"Enter current password for root (enter for none):\"
 send \"$MYSQL\r\"
@@ -82,6 +90,7 @@ expect \"Reload privilege tables now?\"
 send \"y\r\"
 expect eof
 ")
+echo ""
 echo "mysql_secure_installation completed!"
 
 # Configure Panel Database
@@ -159,10 +168,10 @@ service nginx restart
 
 wget https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/pteroq.service -O /etc/systemd/system/pteroq.service
 
-DockerContainer=/.dockerenv     
+DockerContainer=/.dockerenv
 if [ -f $DockerContainer ]; then
-   # Enable and Start Local System Services   
-   service pteroq start  
+   # Enable and Start Local System Services
+   service pteroq start
 else
    # Enable and Start Local System Services
    systemctl enable pteroq
@@ -173,14 +182,7 @@ fi
 echo ""
 echo "############################################"
 echo "#                                          #"
-echo "#       Configure Nginx Web Server         #"
-echo "#                                          #"
-echo "############################################"
-
-echo ""
-echo "############################################"
-echo "#                                          #"
-echo "#     Generate Certbot SSL Certificate     #"
+echo "#      Generate Panel SSL Certificate      #"
 echo "#                                          #"
 echo "############################################"
 
@@ -204,13 +206,7 @@ wget https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/pt
 sed -i -e "s/<domain>/"$panelfqdn"/g" /etc/nginx/sites-available/pterodactyl.conf
 ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf && service nginx restart
 
-# Final Message 
+# Final Message
 echo ""
 echo " Panel Setup Completed!! Please go to: https://$panelfqdn "
-echo ""
-
-echo ""
-echo "Mysql Databse: panel"
-echo "Username: pterodactyl"
-echo "Password: $MySQLUserPwd"
 echo ""
