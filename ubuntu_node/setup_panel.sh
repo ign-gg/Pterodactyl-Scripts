@@ -100,6 +100,7 @@ MYSQL_SCRIPT
 echo ""
 echo ""
 echo "MySQL Database: Panel Created!"
+echo "Please take note of these details, as you require them later on!"
 echo ""
 echo "Database: panel"
 echo "Username: pterodactyl"
