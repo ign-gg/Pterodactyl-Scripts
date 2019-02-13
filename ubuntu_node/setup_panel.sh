@@ -1,10 +1,5 @@
 #!/bin/bash
 #
-# TO DO
-#  mysql_secure_installation [☑]
-#  configure mysql database for pyterdactyl panel [ ]
-#  automate random password generation and export to text file
-
 
 # Clear Current Screen
 clear
