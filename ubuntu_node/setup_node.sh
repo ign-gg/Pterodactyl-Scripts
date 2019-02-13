@@ -41,7 +41,8 @@ echo "############################################"
 
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 apt-get -y install zip unzip tar make gcc g++ python \
-                   python-dev docker.io nodejs certbot
+                   python-dev docker.io nodejs certbot \
+                   curl wget 
 npm upgrade 
 
 # Enable Docker Service
