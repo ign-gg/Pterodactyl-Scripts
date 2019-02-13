@@ -39,7 +39,7 @@ echo "#   Installing Pterodactyl Node Packages   #"
 echo "#                                          #"
 echo "############################################"
 
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_8.x | -E bash -
 apt-get -y install zip unzip tar make gcc g++ python \
                    python-dev docker.io nodejs certbot 
 npm upgrade 
