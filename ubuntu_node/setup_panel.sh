@@ -54,10 +54,11 @@ apt-add-repository universe
 apt -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstring \
                    php7.2-tokenizer php7.2-bcmath php7.2-xml php7.2-fpm php7.2-curl \
                    php7.2-zip mariadb-server mariadb-client nginx tar unzip git redis-server \
-                   certbot expect composer wget dialog
+                   certbot expect composer wget dialog redis
                    
 DockerContainer=/.dockerenv     
 if [ -f $DockerContainer ]; then
+   # Enable and Start Local System Services   
    service mysql start  
    service nginx start 
 else
@@ -161,8 +162,16 @@ chown -R www-data:www-data *
 service nginx restart
 
 wget https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/pteroq.service -O /etc/systemd/system/pteroq.service
-systemctl enable pteroq.service
-systemctl start  pteroq.service
+
+DockerContainer=/.dockerenv     
+if [ -f $DockerContainer ]; then
+   # Enable and Start Local System Services   
+   service pteroq start  
+else
+   # Enable and Start Local System Services
+   systemctl enable pteroq
+   systemctl start  pteroq
+fi 
 
 # Configure Nginx SSL
 echo ""
