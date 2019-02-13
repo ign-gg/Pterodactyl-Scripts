@@ -58,3 +58,10 @@ chown -R www-data:www-data *
 # Restore Panel to Acitve Mode - Allows Log Authentication
 php artisan up
 php artisan queue:restart
+
+echo ""
+echo "############################################"
+echo "#                                          #"
+echo "#  Pterodactyl Panel upgrade completed!!   #"
+echo "#                                          #"
+echo "############################################"
