@@ -33,8 +33,8 @@ echo "#  Updating Local Repository and Packages  #"
 echo "#                                          #"
 echo "############################################"
 
-apt-get update && apt-get -y upgrade
-apt-get -y install software-properties-common curl
+apt update && apt -y upgrade
+apt -y install software-properties-common curl
 
 # Install Pterodactyl Panel Packages
 echo ""
@@ -48,20 +48,26 @@ LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
 add-apt-repository -y ppa:chris-lea/redis-server
 curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash
 
-apt-get update
+apt update
 apt-add-repository universe
 
-apt-get -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstring \
-root                   php7.2-tokenizer php7.2-bcmath php7.2-xml php7.2-fpm php7.2-curl \
+apt -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstring \
+                   php7.2-tokenizer php7.2-bcmath php7.2-xml php7.2-fpm php7.2-curl \
                    php7.2-zip mariadb-server mariadb-client nginx tar unzip git redis-server \
-                   certbot expect composer wget
+                   certbot expect composer wget dialog
                    
-# Enable and Start Local System Services
-systemctl enable mysql
-systemctl start mysql
+DockerContainer=/.dockerenv     
+if [ -f $DockerContainer ]; then
+   service start mysql 
+   service start nginx
+else
+   # Enable and Start Local System Services
+   systemctl enable mysql
+   systemctl start mysql
 
-systemctl enable nginx
-systemctl start nginx
+   systemctl enable nginx
+   systemctl start nginx
+fi 
 
 SECURE_MYSQL=$(expect -c "
 set timeout 10
