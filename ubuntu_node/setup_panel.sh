@@ -58,8 +58,8 @@ apt -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstri
                    
 DockerContainer=/.dockerenv     
 if [ -f $DockerContainer ]; then
-   service start mysql 
-   service start nginx
+   service mysql start  
+   service nginx start 
 else
    # Enable and Start Local System Services
    systemctl enable mysql
