@@ -57,10 +57,12 @@ apt -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstri
 DockerContainer=/.dockerenv
 if [ -f $DockerContainer ]; then
    echo ""
+   apt -y install screen
+   
    # Enable and Start Local System Services
    service mysql start
    service nginx start
-   service redis-server start
+   screen -dmS redis-server && screen -S redis-server -p 0 -X stuff 'redis-server'
 
 else
    echo ""
