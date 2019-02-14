@@ -63,6 +63,7 @@ if [ -f $DockerContainer ]; then
    service mysql start
    service nginx start
    screen -dmS redis-server && screen -S redis-server -p 0 -X stuff 'redis-server'
+   echo "redis-server service started"
 
 else
    echo ""
@@ -72,7 +73,6 @@ else
 
    systemctl enable nginx
    systemctl start nginx
-
 fi
 
 # Execute mysql_secure_installation
