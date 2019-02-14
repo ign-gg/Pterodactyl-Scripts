@@ -147,6 +147,7 @@ echo "#                                          #"
 echo "############################################"
 
 cp .env.example .env
+composer upgrade
 composer install --no-dev --optimize-autoloader
 
 # Only run the command below if you are installing this Panel for
