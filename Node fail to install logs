@@ -1,4 +1,5 @@
-root@node6:/home/minecraft# ./install.sh
+install.sh
+root@node6:/home/minecraft# sudo ./install.sh
 Session Running as ROOT
 
 ############################################
@@ -17,7 +18,7 @@ Hit:1 https://deb.nodesource.com/node_8.x bionic InRelease
 Hit:2 http://archive.ubuntu.com/ubuntu bionic InRelease
 Get:3 http://archive.ubuntu.com/ubuntu bionic-security InRelease [88.7 kB]
 Get:4 http://archive.ubuntu.com/ubuntu bionic-updates InRelease [88.7 kB]
-Fetched 177 kB in 1s (157 kB/s)
+Fetched 177 kB in 1s (152 kB/s)
 Reading package lists... Done
 Reading package lists... Done
 Building dependency tree
@@ -39,9 +40,8 @@ Calculating upgrade... Done
 + apt-get update
 Hit:1 https://deb.nodesource.com/node_8.x bionic InRelease
 Hit:2 http://archive.ubuntu.com/ubuntu bionic InRelease
-Get:3 http://archive.ubuntu.com/ubuntu bionic-security InRelease [88.7 kB]
-Get:4 http://archive.ubuntu.com/ubuntu bionic-updates InRelease [88.7 kB]
-Fetched 177 kB in 1s (157 kB/s)
+Hit:3 http://archive.ubuntu.com/ubuntu bionic-security InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu bionic-updates InRelease
 Reading package lists... Done
 
 ## Confirming "bionic" is supported...
@@ -63,9 +63,8 @@ OK
 + apt-get update
 Hit:1 https://deb.nodesource.com/node_8.x bionic InRelease
 Hit:2 http://archive.ubuntu.com/ubuntu bionic InRelease
-Get:3 http://archive.ubuntu.com/ubuntu bionic-security InRelease [88.7 kB]
-Get:4 http://archive.ubuntu.com/ubuntu bionic-updates InRelease [88.7 kB]
-Fetched 177 kB in 1s (154 kB/s)
+Hit:3 http://archive.ubuntu.com/ubuntu bionic-security InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu bionic-updates InRelease
 Reading package lists... Done
 
 ## Run `sudo apt-get install -y nodejs` to install Node.js 8.x LTS Carbon and npm
@@ -95,7 +94,7 @@ Failed to start docker.service: Unit docker.service not found.
 ############################################
 
 Please enter the FQDN for the Pyterdactyl Node
-Enter FQDN: node01.anarchype.cpm
+Enter FQDN: node01.anarchype.com
 ./install.sh: line 62: certbot: command not found
 
 ############################################
@@ -108,78 +107,25 @@ Enter FQDN: node01.anarchype.cpm
  Please Visit: https://github.com/pterodactyl/daemon/releases
  Copy the link for the daemon.tar.gz and paste below!
 
-Paste Here: {
-    "web": {
-        "host": "0.0.0.0",
-        "listen": 8081,
-        "ssl": {
-            "enabled": true,
-            "certificate": "/etc/letsencrypt/live/node01.anarchype.com/fullchain.pem",
-            "key": "/etc/letsencrypt/live/node01.anarchype.com/privkey.pem"
-        }
-    },
-    "docker": {
-        "container": {
-            "user": null
-        },
-        "network": {
-            "name": "pterodactyl_nw"
-        },
-        "socket": "/var/run/docker.sock",
-        "autoupdate_images": true
-    },
-    "filesystem": {
-        "server_logs": "/tmp/pterodactyl"
-    },
-    "internals": {
-        "disk_use_seconds": 30,
-        "set_permissions_on_boot": true,
-        "throttle": {
-            "enabled": true,
-            "kill_at_count": 5,
-            "decay": 10,
-            "lines": 1000,
-            "check_interval_ms": 100
-        }
-    },
-    "sftp": {
-        "path": "/srv/daemon-data",
-        "ip": "0.0.0.0",
-        "port": 2122,
-        "keypair": {
-            "bits": 2048,
-            "e": 65537
-        }
-    },
-    "logger": {
-        "path": "logs/",
-        "src": false,
-        "level": "info",
-        "period": "1d",
-        "count": 3
-    },
-    "remote": {
-        "base": "https://panel.anarchype.com"
-    },
-    "uploads": {
-        "size_limit": 800
-    },
-    "keys": [
-        "sEAUpPq1lCrxezXeTCZ9xYopOvaRQoJqnqlY"
-    ]
-}curl: (3) [globbing] unmatched brace in column 1
-
-gzip: stdin: unexpected end of file
-tar: Child returned status 1
+Paste Here: https://github.com/pterodactyl/daemon/releases/tag/v0.6.11
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+gzip: stdin: not in gzip format
+tar: Child died with signal 13
 tar: Error is not recoverable: exiting now
+100 44387    0 44387    0     0  68817      0 --:--:-- --:--:-- --:--:-- 68710
+curl: (23) Failed writing body (669 != 1370)
 ./install.sh: line 85: npm: command not found
 
  Configure the Pterodactyl Daemon
  Please go to the control panel and create
  a new node and generate the automated token key
 
-Paste Here: ./install.sh: line 94: "web":: command not found
---2019-02-15 11:28:57--  https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/wings.service
+Paste Here: npm run configure -- --panel-url https://localhost --token b20369591acda72b49110db654224707
+
+./install.sh: line 94: npm: command not found
+--2019-02-15 11:47:58--  https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/wings.service
 Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 151.101.48.133
 Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|151.101.48.133|:443... connected.
 HTTP request sent, awaiting response... 200 OK
@@ -188,7 +134,7 @@ Saving to: ‘/etc/systemd/system/wings.service’
 
 /etc/systemd/system/wings.ser 100%[=================================================>]     312  --.-KB/s    in 0s
 
-2019-02-15 11:28:57 (31.8 MB/s) - ‘/etc/systemd/system/wings.service’ saved [312/312]
+2019-02-15 11:47:59 (25.0 MB/s) - ‘/etc/systemd/system/wings.service’ saved [312/312]
 
 
 ###############################################
@@ -197,3 +143,4 @@ Saving to: ‘/etc/systemd/system/wings.service’
 #  Please Check Node status under your panel  #
 #                                             #
 ###############################################
+root@node6:/home/minecraft#
