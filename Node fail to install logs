@@ -1,0 +1,199 @@
+root@node6:/home/minecraft# ./install.sh
+Session Running as ROOT
+
+############################################
+#                                          #
+#   AnarchyPE Automated Node Setup Script  #
+#   Version 0.1-Alpha                      #
+#                                          #
+############################################
+
+############################################
+#                                          #
+#  Updating Local Repository and Packages  #
+#                                          #
+############################################
+Hit:1 https://deb.nodesource.com/node_8.x bionic InRelease
+Hit:2 http://archive.ubuntu.com/ubuntu bionic InRelease
+Get:3 http://archive.ubuntu.com/ubuntu bionic-security InRelease [88.7 kB]
+Get:4 http://archive.ubuntu.com/ubuntu bionic-updates InRelease [88.7 kB]
+Fetched 177 kB in 1s (157 kB/s)
+Reading package lists... Done
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+Calculating upgrade... Done
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+
+############################################
+#                                          #
+#   Installing Pterodactyl Node Packages   #
+#                                          #
+############################################
+
+## Installing the NodeSource Node.js 8.x LTS Carbon repo...
+
+
+## Populating apt-get cache...
+
++ apt-get update
+Hit:1 https://deb.nodesource.com/node_8.x bionic InRelease
+Hit:2 http://archive.ubuntu.com/ubuntu bionic InRelease
+Get:3 http://archive.ubuntu.com/ubuntu bionic-security InRelease [88.7 kB]
+Get:4 http://archive.ubuntu.com/ubuntu bionic-updates InRelease [88.7 kB]
+Fetched 177 kB in 1s (157 kB/s)
+Reading package lists... Done
+
+## Confirming "bionic" is supported...
+
++ curl -sLf -o /dev/null 'https://deb.nodesource.com/node_8.x/dists/bionic/Release'
+
+## Adding the NodeSource signing key to your keyring...
+
++ curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
+OK
+
+## Creating apt sources list file for the NodeSource Node.js 8.x LTS Carbon repo...
+
++ echo 'deb https://deb.nodesource.com/node_8.x bionic main' > /etc/apt/sources.list.d/nodesource.list
++ echo 'deb-src https://deb.nodesource.com/node_8.x bionic main' >> /etc/apt/sources.list.d/nodesource.list
+
+## Running `apt-get update` for you...
+
++ apt-get update
+Hit:1 https://deb.nodesource.com/node_8.x bionic InRelease
+Hit:2 http://archive.ubuntu.com/ubuntu bionic InRelease
+Get:3 http://archive.ubuntu.com/ubuntu bionic-security InRelease [88.7 kB]
+Get:4 http://archive.ubuntu.com/ubuntu bionic-updates InRelease [88.7 kB]
+Fetched 177 kB in 1s (154 kB/s)
+Reading package lists... Done
+
+## Run `sudo apt-get install -y nodejs` to install Node.js 8.x LTS Carbon and npm
+## You may also need development tools to build native addons:
+     sudo apt-get install gcc g++ make
+## To install the Yarn package manager, run:
+     curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+     echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+     sudo apt-get update && sudo apt-get install yarn
+
+
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+E: Unable to locate package docker.io
+E: Couldn't find any package by glob 'docker.io'
+E: Couldn't find any package by regex 'docker.io'
+E: Unable to locate package certbot
+./install.sh: line 45: npm: command not found
+Failed to enable unit: Unit file docker.service does not exist.
+Failed to start docker.service: Unit docker.service not found.
+
+############################################
+#                                          #
+#     Generate Certbot SSL Certificate     #
+#                                          #
+############################################
+
+Please enter the FQDN for the Pyterdactyl Node
+Enter FQDN: node01.anarchype.cpm
+./install.sh: line 62: certbot: command not found
+
+############################################
+#                                          #
+#  Installing Pterodactyl Daemon Software  #
+#                                          #
+############################################
+
+ New Node? You need to get you some Pterodactyl Daemon goodness!!
+ Please Visit: https://github.com/pterodactyl/daemon/releases
+ Copy the link for the daemon.tar.gz and paste below!
+
+Paste Here: {
+    "web": {
+        "host": "0.0.0.0",
+        "listen": 8081,
+        "ssl": {
+            "enabled": true,
+            "certificate": "/etc/letsencrypt/live/node01.anarchype.com/fullchain.pem",
+            "key": "/etc/letsencrypt/live/node01.anarchype.com/privkey.pem"
+        }
+    },
+    "docker": {
+        "container": {
+            "user": null
+        },
+        "network": {
+            "name": "pterodactyl_nw"
+        },
+        "socket": "/var/run/docker.sock",
+        "autoupdate_images": true
+    },
+    "filesystem": {
+        "server_logs": "/tmp/pterodactyl"
+    },
+    "internals": {
+        "disk_use_seconds": 30,
+        "set_permissions_on_boot": true,
+        "throttle": {
+            "enabled": true,
+            "kill_at_count": 5,
+            "decay": 10,
+            "lines": 1000,
+            "check_interval_ms": 100
+        }
+    },
+    "sftp": {
+        "path": "/srv/daemon-data",
+        "ip": "0.0.0.0",
+        "port": 2122,
+        "keypair": {
+            "bits": 2048,
+            "e": 65537
+        }
+    },
+    "logger": {
+        "path": "logs/",
+        "src": false,
+        "level": "info",
+        "period": "1d",
+        "count": 3
+    },
+    "remote": {
+        "base": "https://panel.anarchype.com"
+    },
+    "uploads": {
+        "size_limit": 800
+    },
+    "keys": [
+        "sEAUpPq1lCrxezXeTCZ9xYopOvaRQoJqnqlY"
+    ]
+}curl: (3) [globbing] unmatched brace in column 1
+
+gzip: stdin: unexpected end of file
+tar: Child returned status 1
+tar: Error is not recoverable: exiting now
+./install.sh: line 85: npm: command not found
+
+ Configure the Pterodactyl Daemon
+ Please go to the control panel and create
+ a new node and generate the automated token key
+
+Paste Here: ./install.sh: line 94: "web":: command not found
+--2019-02-15 11:28:57--  https://raw.githubusercontent.com/anarchype/AnarchyPE/master/ubuntu_node/wings.service
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 151.101.48.133
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|151.101.48.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 312 [text/plain]
+Saving to: ‘/etc/systemd/system/wings.service’
+
+/etc/systemd/system/wings.ser 100%[=================================================>]     312  --.-KB/s    in 0s
+
+2019-02-15 11:28:57 (31.8 MB/s) - ‘/etc/systemd/system/wings.service’ saved [312/312]
+
+
+###############################################
+#                                             #
+#  Pterodactyl Node Initial Setup Completed!  #
+#  Please Check Node status under your panel  #
+#                                             #
+###############################################
