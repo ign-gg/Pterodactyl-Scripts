@@ -1,1 +1,1 @@
-# Pterodactyl Panel Automated Setup Scripts
+# Pterodactyl Panel Automated Install Scripts
