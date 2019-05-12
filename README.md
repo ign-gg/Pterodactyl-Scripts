@@ -1,1 +1,1 @@
-# AnarchyPE Pterodactyl Game Panel Automated Setup Scripts
+# Pterodactyl Game Panel Automated Setup Scripts
