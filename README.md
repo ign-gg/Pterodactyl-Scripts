@@ -1,1 +1,1 @@
-# Pterodactyl Game Panel Automated Setup Scripts
+# Pterodactyl Panel Automated Setup Scripts
