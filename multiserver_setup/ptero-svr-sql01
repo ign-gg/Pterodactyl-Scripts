@@ -1,0 +1,31 @@
+
+
+https://websiteforstudents.com/configure-remote-access-mysql-mariadb-databases/
+
+sudo apt install -y mariadb-server
+
+sudo systemctl enable mariadb.service
+sudo systemctl start mariadb.service
+
+# default creds : root / z4vi5yDMyTF8E2eemlW4lpmDi6ToJ4
+mysql_secure_installation
+
+mysql -u root -p 
+
+USE mysql;
+
+# Remember to change 'somePassword' below to be a unique password specific to this account.
+CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY 'gMb0GRJC9iF2rOw7HtkOLQRw67uji5';
+CREATE USER 'pterodactyl'@'10.150.105.101' IDENTIFIED BY 'gMb0GRJC9iF2rOw7HtkOLQRw67uji5';
+CREATE USER 'pterodactyl'@'10.150.105.102' IDENTIFIED BY 'gMb0GRJC9iF2rOw7HtkOLQRw67uji5';
+CREATE USER 'pterodactyl'@'10.150.105.103' IDENTIFIED BY 'gMb0GRJC9iF2rOw7HtkOLQRw67uji5';
+
+CREATE DATABASE panel;
+
+GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'10.150.105.101' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'10.150.105.102' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'10.150.105.103' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+exit
+
