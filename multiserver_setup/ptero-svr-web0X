@@ -1,0 +1,88 @@
+# Inital Server Setup
+apt update
+apt upgrade -y
+
+# Configure Local Time Zone [Euopre/London]
+timedatectl set-timezone Europe/London
+
+#
+# Add "add-apt-repository" command
+apt -y install software-properties-common curl
+
+# Add additional repositories for PHP,
+LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+
+# Update repositories list
+apt update
+
+# Add universe repository if you are on Ubuntu 18.04
+apt-add-repository universe
+
+# Configure Web Servrs
+apt -y install nginx tar unzip git redis-server php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstring php7.2-tokenizer php7.2-bcmath php7.2-xml php7.2-fpm php7.2-curl php7.2-zip
+
+# Panel Setup
+curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+mkdir -p /var/www/pterodactyl
+cd /var/www/pterodactyl
+
+curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v0.7.15/panel.tar.gz
+tar --strip-components=1 -xzvf panel.tar.gz
+chmod -R 755 storage/* bootstrap/cache/
+
+cp .env.example .env
+composer install --no-dev
+
+php artisan key:generate --force
+
+php artisan p:environment:database
+# host - 10.150.105.104
+# pwd - gMb0GRJC9iF2rOw7HtkOLQRw67uji5
+
+# If using NGINX or Apache (not on CentOS):
+chown -R www-data:www-data * 
+
+sudo crontab -e 
+* * * * * php /var/www/pterodactyl/artisan schedule:run >> /dev/null 2>&1
+
+nano /etc/systemd/system/pteroq.service
+
+# Pterodactyl Queue Worker File
+# ----------------------------------
+
+[Unit]
+Description=Pterodactyl Queue Worker
+After=redis-server.service
+
+[Service]
+# On some systems the user and group might be different.
+# Some systems use `apache` or `nginx` as the user and group.
+User=www-data
+Group=www-data
+Restart=always
+ExecStart=/usr/bin/php /var/www/pterodactyl/artisan queue:work --queue=high,standard,low --sleep=3 --tries=3
+
+[Install]
+WantedBy=multi-user.target
+
+systemctl enable pteroq.service
+systemctl start pteroq.service
+
+
+#
+# WEB SERVER
+
+nano /etc/nginx/sites-available/pterodactyl.conf
+https://pterodactyl.io/panel/webserver_configuration.html#nginx
+
+sudo ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
+rm /etc/nginx/sites-enabled/default && service nginx reload
+systemctl restart nginx
+
+
+###
+# https://pterodactyl.io/panel/configuration.html
+sudo nano /var/www/pterodactyl/.env
+Your Panel is currently configured to read settings from the environment only. You will need to set APP_ENVIRONMENT_ONLY=false in your environment file in order to load settings dynamically.
+
