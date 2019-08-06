@@ -1,0 +1,28 @@
+http {
+    #...
+    upstream upstream_1{
+        server 192.168.1.100:6666;
+        server 192.168.1.101:9999;
+    }
+
+    upstream upstream_2{
+        server 192.168.1.100:6661;  // other backstream port if you use port 81
+        server 192.168.1.101:9991;
+    }
+
+    server {
+        listen 80;
+        #.....
+        location ~ /myapp {
+            proxy_pass http://upstream_1;
+        }
+    }
+
+    server {
+        listen 81;
+        #.....
+        location ~ /myapp {
+            proxy_pass http://upstream_2;
+        }
+    }
+}
