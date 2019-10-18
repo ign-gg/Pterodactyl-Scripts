@@ -2,6 +2,8 @@
 
 https://websiteforstudents.com/configure-remote-access-mysql-mariadb-databases/
 
+https://alvinalexander.com/blog/post/mysql/list-tables-in-mysql-database
+
 sudo apt install -y mariadb-server
 
 sudo systemctl enable mariadb.service
