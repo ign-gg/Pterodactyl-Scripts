@@ -36,7 +36,10 @@ composer install --no-dev
 
 php artisan key:generate --force
 
+php artisan p:environment:setup
+
 php artisan p:environment:database
+
 # host - 10.150.105.104
 # pwd - gMb0GRJC9iF2rOw7HtkOLQRw67uji5
 
